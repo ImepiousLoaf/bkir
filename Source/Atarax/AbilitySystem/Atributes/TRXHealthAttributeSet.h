@@ -18,7 +18,7 @@ public:
 	UTRXHealthAttributeSet();
 protected:
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
-	
+	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 private:
 	UFUNCTION()
 	void OnRep_Health(const FGameplayAttributeData& OldHealth) const;

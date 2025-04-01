@@ -29,3 +29,13 @@ void UTRXEnergyAttributeSet::GetLifetimeReplicatedProps(TArray<class FLifetimePr
 	DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, Energy, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, MaxEnergy, COND_None, REPNOTIFY_Always);
 }
+
+void UTRXEnergyAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
+{
+	Super::PreAttributeChange(Attribute, NewValue);
+
+	if(Attribute == GetEnergyAttribute())
+	{
+		NewValue = FMath::Clamp(NewValue, 0, MaxEnergy.GetCurrentValue());
+	}
+}

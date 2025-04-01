@@ -11,14 +11,18 @@
  */
 
 
+struct FTRXTargetData;
+
 UENUM(BlueprintType)
 enum class EAbilityInputID : uint8
 {
 	None,
-	Interact,
+	Confirm,
+	Cancel,
 	Ability1,
 	Ability2,
-	Ability3
+	Ability3,
+	Ability4,
 };
 
 UCLASS()
@@ -27,6 +31,12 @@ class ATARAX_API UTRXBaseAbility : public UGameplayAbility
 	GENERATED_BODY()
 
 public:
+	UFUNCTION(BlueprintCallable)
+	FGameplayAbilityTargetDataHandle MakeTargetDataFromTRXTargetData(FTRXTargetData in);
+	UFUNCTION(BlueprintCallable)
+	const FTRXTargetData GetTargetDataFromTRXTargetData(const FGameplayAbilityTargetDataHandle& TargetData, int32 Index);
+	UFUNCTION(BlueprintCallable)
+	void SendTargetData(const FGameplayAbilityTargetDataHandle Data);
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EAbilityInputID InputId = EAbilityInputID::None;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)

@@ -19,7 +19,7 @@ void UTRXHealthAttributeSet::OnRep_MaxHealth(const FGameplayAttributeData& OldMa
 UTRXHealthAttributeSet::UTRXHealthAttributeSet()
 {
 	InitHealth(100);
-	InitMaxHealth(100);
+	InitMaxHealth(130);
 }
 
 void UTRXHealthAttributeSet::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -28,4 +28,14 @@ void UTRXHealthAttributeSet::GetLifetimeReplicatedProps(TArray<class FLifetimePr
 
 	DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, Health, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, MaxHealth, COND_None, REPNOTIFY_Always);
+}
+
+void UTRXHealthAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
+{
+	Super::PreAttributeChange(Attribute, NewValue);
+
+	if(Attribute == GetHealthAttribute())
+	{
+		NewValue = FMath::Clamp(NewValue, 0, MaxHealth.GetCurrentValue());
+	}
 }
