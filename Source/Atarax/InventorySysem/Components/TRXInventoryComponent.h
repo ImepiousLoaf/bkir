@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Atarax/GMPSC/GameInstance/TRXInventorySubsystem.h"
 #include "Components/ActorComponent.h"
 #include "TRXInventoryComponent.generated.h"
 
@@ -26,13 +27,14 @@ protected:
 public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
 	UFUNCTION(BlueprintCallable)
-	void MakeObjectToRep(int a);
-	
+	bool AddItem(UTRXInventoryObject* Item);
 private:
-	UFUNCTION()
-	void onObjRep(UTRXInventoryObject* Old);
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(AllowPrivateAccess = true), ReplicatedUsing= onObjRep)
-	TObjectPtr<UTRXInventoryObject> ObjectToRep;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(AllowPrivateAccess = true), Replicated)
+	TArray<UTRXInventoryObject*> InventoryArray;
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, meta=(AllowPrivateAccess = true), Replicated)
+	int SizeX;
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, meta=(AllowPrivateAccess = true), Replicated)
+	int SizeY;
+
 };

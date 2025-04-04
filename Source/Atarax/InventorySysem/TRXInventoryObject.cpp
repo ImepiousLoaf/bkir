@@ -3,6 +3,7 @@
 
 #include "TRXInventoryObject.h"
 
+#include "Atarax/Common/Helpers/TRXHelpers.h"
 #include "Net/UnrealNetwork.h"
 
 void UTRXInventoryObject::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -12,7 +13,12 @@ void UTRXInventoryObject::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, Prepon, COND_None, REPNOTIFY_Always);
 }
 
+class UWorld* UTRXInventoryObject::GetWorld() const
+{
+	return GetOuter()->GetWorld();
+}
+
 void UTRXInventoryObject::hut()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, "pipa");
+	UTRXHelpers::PrintString(GetWorld(),FString(GetClass()->GetDisplayNameText().ToString()));
 }	

@@ -4,6 +4,7 @@
 #include "Atarax/AbilitySystem/Components/TRXAbilitySystemComponent.h"
 #include "Atarax/GMPSC/PlayerState/TRXPlayerState.h"
 #include "Atarax/Characters/Components/Movement/TRXCharacterMovementComponent.h"
+#include "Atarax/Common/Helpers/TRXHelpers.h"
 #include "Atarax/InventorySysem/TRXInventoryObject.h"
 #include "Engine/ActorChannel.h"
 #include "Net/UnrealNetwork.h"
@@ -24,21 +25,25 @@ void ATRXCharacterBase::debugPrint()
 		}
 		str.Append(" ");
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Magenta, str);
+	UTRXHelpers::PrintString(GetWorld(), str, 0, FColor::Red, -1 );
+	//GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Magenta, str);
 }
 
 void ATRXCharacterBase::gui()
 {
-		// FString str("prepon replicated: ");
-		// str.AppendInt(old ? old->Prepon : -1);
-		GEngine->AddOnScreenDebugMessage(-1, 2.0, FColor::Orange, "ObJin Replicated");
+		UTRXHelpers::PrintString(GetWorld(),"ObJin Replicated", 2.0f, FColor::Orange);
 }
 
 void ATRXCharacterBase::MakeObjectToRep(int a)
 {
-	UTRXInventoryObject* Item = NewObject<UTRXInventoryObject>();
+	UTRXInventoryObject* Item = NewObject<UTRXInventoryObject>(this);
+	UTRXInventoryObject* Item2 = NewObject<UTRXPipa>(this);
+	//UTRXHelpers::PrintString(GetWorld(), "a");
 	AddReplicatedSubObject(Item);
+	AddReplicatedSubObject(Item2);
 	oBJiN.Add(Item);
+	oBJiN.Last()->Prepon = a;
+	oBJiN.Add(Item2);
 	oBJiN.Last()->Prepon = a;
 }
 

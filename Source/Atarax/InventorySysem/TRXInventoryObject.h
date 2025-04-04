@@ -9,6 +9,9 @@
 /**
  * 
  */
+
+class UWorld;
+
 UCLASS(Blueprintable)
 class ATARAX_API UTRXInventoryObject : public UObject
 {
@@ -16,9 +19,34 @@ class ATARAX_API UTRXInventoryObject : public UObject
 protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual bool IsSupportedForNetworking() const override { return true; }
+	virtual UWorld* GetWorld() const override;
 	UFUNCTION()
 	void hut();
 public:
 	UPROPERTY(ReplicatedUsing=hut, BlueprintReadWrite)
 	int Prepon = 4;
+private:
+	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess), BlueprintReadOnly)
+	UTexture2D* Texture;
+	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess), BlueprintReadOnly)
+	int Width;
+	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess), BlueprintReadOnly)
+	int Height;
+	UPROPERTY(Replicated, BlueprintReadWrite, meta=(AllowPrivateAccess))
+	int CoordX;
+	UPROPERTY(Replicated, BlueprintReadWrite, meta=(AllowPrivateAccess))
+	int CoordY;
+	UPROPERTY(Replicated, BlueprintReadOnly, meta=(AllowPrivateAccess))
+	int Quantity;
+	UPROPERTY(Replicated, BlueprintReadOnly, meta=(AllowPrivateAccess))
+	bool Rotated;
+};
+
+UCLASS(Blueprintable)
+class UTRXPipa : public UTRXInventoryObject
+{
+	GENERATED_BODY()
+
+public:
+	
 };

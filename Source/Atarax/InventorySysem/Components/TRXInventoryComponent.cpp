@@ -35,7 +35,7 @@ bool UTRXInventoryComponent::ReplicateSubobjects(UActorChannel* Channel, FOutBun
 	bool bWroteSomething = Super::ReplicateSubobjects(Channel, Bunch, RepFlags);
 		
 	// Single Object
-	bWroteSomething |= Channel->ReplicateSubobject(ObjectToRep, *Bunch, *RepFlags);
+	//bWroteSomething |= Channel->ReplicateSubobjectList(InventoryArray, *Bunch, *RepFlags);
 	return bWroteSomething;
 		
 	// Array of Objects
@@ -47,7 +47,7 @@ void UTRXInventoryComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, ObjectToRep, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, InventoryArray, COND_None, REPNOTIFY_Always);
 }
 
 
@@ -59,20 +59,8 @@ void UTRXInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	// ...
 }
 
-void UTRXInventoryComponent::MakeObjectToRep(int a)
+bool UTRXInventoryComponent::AddItem(UTRXInventoryObject* Item)
 {
-	if(ObjectToRep)
-		RemoveReplicatedSubObject(ObjectToRep);
-	
-	ObjectToRep= NewObject<UTRXInventoryObject>();
-	ObjectToRep->Prepon = a;
-	AddReplicatedSubObject(ObjectToRep);
+	InventoryArray.Add(Item);
+	return true;
 }
-
-void UTRXInventoryComponent::onObjRep(UTRXInventoryObject* Old)
-{
-	FString str("prepon replicated: ");
-	str.AppendInt(Old ? Old->Prepon : 0);
-	GEngine->AddOnScreenDebugMessage(-1, 5.0, FColor::Orange, str);
-}
-
