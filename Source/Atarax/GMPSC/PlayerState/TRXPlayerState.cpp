@@ -26,8 +26,8 @@ ATRXPlayerState::ATRXPlayerState()
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Full);
 	AbilitySystemComponent->SetIsReplicated(true);
 	//AbilitySystemComponent->bReplicateInstancedAbilities = true;
-	HealthAttributeSet = CreateDefaultSubobject<UTRXHealthAttributeSet>("Attribute Health");
-	EnergyAttributeSet = CreateDefaultSubobject<UTRXEnergyAttributeSet>("Attribute Energy");
+	HealthAttributeSet = CreateDefaultSubobject<UTRXHealthAttributeSet>(TEXT("Attribute Health"));
+	EnergyAttributeSet = CreateDefaultSubobject<UTRXEnergyAttributeSet>(TEXT("Attribute Energy"));
 }
 
 UAbilitySystemComponent* ATRXPlayerState::GetAbilitySystemComponent() const

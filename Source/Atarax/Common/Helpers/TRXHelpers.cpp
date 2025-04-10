@@ -16,16 +16,17 @@ void UTRXHelpers::PrintString(UObject* WorldContext, FString InStr, float time, 
 			case NM_Client:
 				// GPlayInEditorID 0 is always the server, so 1 will be first client.
 					// You want to keep this logic in sync with GeneratePIEViewportWindowTitle and UpdatePlayInEditorWorldDebugString
-						Prefix = FString::Printf(TEXT("Client %d: "), GPlayInEditorID);
+						Prefix = FString(TEXT("Client %d: "), GPlayInEditorID);
 				break;
 			case NM_DedicatedServer:
 			case NM_ListenServer:
-				Prefix = FString::Printf(TEXT("Server: "));
+				Prefix = FString(TEXT("Server: "));
 				break;
 			case NM_Standalone:
 				break;
 			}
 		}
-		GEngine->AddOnScreenDebugMessage(key, time, Color, FString(Prefix + InStr));
+		FString DebugMessage = FString(Prefix + InStr);
+		GEngine->AddOnScreenDebugMessage(key, time, Color, DebugMessage);
 	}
 }

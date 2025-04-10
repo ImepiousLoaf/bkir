@@ -25,7 +25,7 @@ protected:
 public:
 	UPROPERTY(ReplicatedUsing=hut, BlueprintReadWrite)
 	int Prepon = 4;
-private:
+public:
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess), BlueprintReadOnly)
 	UTexture2D* Texture;
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess), BlueprintReadOnly)
