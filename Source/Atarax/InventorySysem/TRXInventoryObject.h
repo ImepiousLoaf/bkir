@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Net/Serialization/FastArraySerializer.h"
 #include "UObject/Object.h"
 #include "TRXInventoryObject.generated.h"
 
@@ -10,12 +11,34 @@
  * 
  */
 
+USTRUCT(BlueprintType)
+struct FGridCoord
+{
+	GENERATED_BODY()
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int X;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int Y;
+	FGridCoord() = default;
+	FGridCoord(int x, int y)
+	{
+		X = x;
+		Y = y;
+	}
+};
+
+
+
 class UWorld;
 
 UCLASS(Blueprintable)
-class ATARAX_API UTRXInventoryObject : public UObject
+class ATARAX_API UTRXInventoryObject : public UObject, public FFastArraySerializerItem
 {
 	GENERATED_BODY()
+
+public:
+	UTRXInventoryObject();
+
 protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual bool IsSupportedForNetworking() const override { return true; }
@@ -25,7 +48,7 @@ protected:
 public:
 	UPROPERTY(ReplicatedUsing=hut, BlueprintReadWrite)
 	int Prepon = 4;
-public:
+
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess), BlueprintReadOnly)
 	UTexture2D* Texture;
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess), BlueprintReadOnly)

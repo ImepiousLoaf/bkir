@@ -8,6 +8,7 @@
 #include "Components/CanvasPanel.h"
 #include "TRXInventoryGridWidgetBase.generated.h"
 
+class UTRXInventoryObjectWidgetBase;
 class UTRXInventoryComponent;
 /**
  * 
@@ -27,6 +28,8 @@ private:
 	
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
 	void init(UCanvasPanel* CanvasSetup);
+	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	void Update();
 	virtual bool NativeOnDragOver(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
 	virtual void NativeOnDragCancelled(const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
 	virtual bool NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
@@ -37,15 +40,18 @@ private:
 	int Width;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess=true))
 	int Height;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess=true))
+	TSubclassOf<UTRXInventoryObjectWidgetBase> InventoryObjectWidgetCLass;
 	UPROPERTY(BlueprintReadOnly, Category="Inventory", meta=(AllowPrivateAccess=true, ExposeOnSpawn=true))
 	UTRXInventoryComponent* InventoryComponent;
 
 
-	UPROPERTY(BlueprintReadOnly, Category="Inventory", meta=(AllowPrivateAccess=true))
+	UPROPERTY(BlueprintReadOnly, Category="Inventory", meta=(AllowPrivateAccess=true, BindWidget))
 	UCanvasPanel* Canvas;
 	UPROPERTY(BlueprintReadOnly, Category="Inventory", meta=(AllowPrivateAccess=true))
 	bool IsDragOver;
 
 	
 	FIntVector4 DragOverLocationAndSize;
+	FVector2d GridCoord;
 };

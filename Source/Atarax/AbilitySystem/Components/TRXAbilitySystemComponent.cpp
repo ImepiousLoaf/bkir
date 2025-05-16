@@ -5,7 +5,7 @@
 
 #include "Atarax/AbilitySystem/Abilities/TRXBaseAbility.h"
 
-
+#pragma optimize("", off)
 UTRXBaseAbility* UTRXAbilitySystemComponent::GetPrimaryAbilityInstanceFromClass(TSubclassOf<UGameplayAbility> AbilityClass, UObject* OptionalSourceObject)
 {
 	const FGameplayAbilitySpecHandle Handle = FindAblitySpecHandleFromClass(AbilityClass, OptionalSourceObject);
@@ -109,7 +109,7 @@ void UTRXAbilitySystemComponent::AbilityLocalInputReleased(int32 InputID)
 				}
 				AbilitySpecInputReleased(Spec);
 				//AbilitySpecInputPressed(Spec);
-
+				
 				InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, Spec.Handle, Spec.ActivationInfo.GetActivationPredictionKey());
 			}
 		}	

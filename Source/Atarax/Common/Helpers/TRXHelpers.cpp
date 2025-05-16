@@ -3,6 +3,8 @@
 
 #include "TRXHelpers.h"
 
+#include "Atarax/InventorySysem/TRXInventoryObject.h"
+
 void UTRXHelpers::PrintString(UObject* WorldContext, FString InStr, float time, FColor Color, int key)
 {
 	UWorld* World = GEngine->GetWorldFromContextObject(WorldContext, EGetWorldErrorMode::ReturnNull);
@@ -29,4 +31,12 @@ void UTRXHelpers::PrintString(UObject* WorldContext, FString InStr, float time, 
 		FString DebugMessage = FString(Prefix + InStr);
 		GEngine->AddOnScreenDebugMessage(key, time, Color, DebugMessage);
 	}
+}
+
+FGridCoord UTRXHelpers::PixelToGrid(const FVector2d& Coord, int GridSize)
+{
+	int x = FMath::Floor(Coord.X / GridSize);
+	int y = FMath::Floor(Coord.Y / GridSize);
+ 
+	return FGridCoord(x, y);
 }

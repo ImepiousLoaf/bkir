@@ -3,14 +3,42 @@
 
 #include "TRXInventoryGridWidgetBase.h"
 
+#include "IDetailTreeNode.h"
 #include "Atarax/Common/Helpers/TRXHelpers.h"
+#include "Atarax/GMPSC/PlayerController/TRXPlayerControllerBase.h"
 #include "Atarax/InventorySysem/TRXInventoryObject.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
+#include "Components/CanvasPanelSlot.h"
+#include "Kismet/GameplayStatics.h"
 #include "Object/TRXInventoryObjectDragDropBase.h"
+#include "Object/TRXInventoryObjectWidgetBase.h"
+
+#pragma optimize("", off)
 
 void UTRXInventoryGridWidgetBase::init(UCanvasPanel* CanvasSetup)
 {
 	Canvas = CanvasSetup;
+}
+
+void UTRXInventoryGridWidgetBase::Update()
+{
+	Canvas->ClearChildren();
+	if(InventoryComponent)
+	{
+		FVector2d Size = InventoryComponent->GetSize();
+		Size *= 64;
+		Size.Y += 50;
+		Cast<UCanvasPanelSlot>(this->Slot)->SetSize(Size);
+
+		for (const auto& it : InventoryComponent->GetInventoryArray())
+		{
+			UTRXInventoryObjectWidgetBase* widget = CreateWidget<UTRXInventoryObjectWidgetBase>(this, InventoryObjectWidgetCLass, FName(it->GetName()));
+			widget->SetInventoryComponent(InventoryComponent);
+			widget->SetInventoryObject(it);
+			Canvas->AddChild(widget);
+		}
+		
+	}
 }
 
 bool UTRXInventoryGridWidgetBase::NativeOnDragOver(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
@@ -27,10 +55,12 @@ bool UTRXInventoryGridWidgetBase::NativeOnDragOver(const FGeometry& InGeometry, 
 
 			DragOverLocationAndSize.X = LocalCoordinate.X;
 			DragOverLocationAndSize.Y = LocalCoordinate.Y;
+			GridCoord = FVector2d(LocalCoordinate/ 64);
+			GridCoord = GridCoord.RoundToVector() - FVector2d(Object->Width / 2, Object->Height / 2);
 			DragOverLocationAndSize.Z = !Object->Rotated ? Object->Width : Object->Height;
 			DragOverLocationAndSize.W = !Object->Rotated ? Object->Height : Object->Width;
-
-			UTRXHelpers::PrintString(GetWorld(), DragOverLocationAndSize.ToString(), 2.0f, FColor::Orange, 4);
+			UTRXHelpers::PrintString(GetWorld(), FVector2d( DragOverLocationAndSize.X, DragOverLocationAndSize.Y).ToString(), 2, FColor::Purple, 87);
+			UTRXHelpers::PrintString(GetWorld(), FVector2d( GridCoord).ToString(), 2, FColor::Purple, 88);
 		}
 	}
 	
@@ -47,6 +77,11 @@ void UTRXInventoryGridWidgetBase::NativeOnDragCancelled(const FDragDropEvent& In
 bool UTRXInventoryGridWidgetBase::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
 {
 	IsDragOver = false;
+	auto oper = Cast<UTRXInventoryObjectDragDropBase>(InOperation);
+	auto PC = GetWorld()->GetFirstPlayerController<ATRXPlayerControllerBase>();
+	TObjectPtr<UTRXInventoryObject> Item = oper->GetInventoryObject();
+	
+	PC->TransferItem(oper->GetInventoryComponent(), InventoryComponent, Item, FGridCoord(GridCoord.X, GridCoord.Y));
 	return Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
 }
 
@@ -67,7 +102,6 @@ int32 UTRXInventoryGridWidgetBase::NativePaint(const FPaintArgs& Args, const FGe
 		Center.Y += 50;
 		Center.X -= Size.X * 32;
 		Center.Y -= Size.Y * 32;
-
 		UWidgetBlueprintLibrary::DrawLine(Context, Center, Center + FVector2d(Size.X * 64,0), FLinearColor::Red);
 		Center.Y += Size.Y * 64;
 		UWidgetBlueprintLibrary::DrawLine(Context, Center, Center + FVector2d(Size.X * 64,0), FLinearColor::Red);

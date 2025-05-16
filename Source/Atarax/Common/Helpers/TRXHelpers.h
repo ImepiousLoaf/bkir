@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "TRXHelpers.generated.h"
 
+struct FGridCoord;
 /**
  * 
  */
@@ -14,4 +15,5 @@ class ATARAX_API UTRXHelpers : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 public:
 	static void PrintString(UObject* WorldContext, FString InStr, float time = 2.0f, FColor Color = FColor(160, 108, 255), int key = -1);
+	static FGridCoord PixelToGrid(const FVector2d& Coord, int GridSize);
 };

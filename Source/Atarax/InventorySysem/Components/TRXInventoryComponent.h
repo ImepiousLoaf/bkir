@@ -7,7 +7,10 @@
 #include "Components/ActorComponent.h"
 #include "TRXInventoryComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInventoryUpdated);
 
+
+struct FGridCoord;
 class UTRXInventoryObject;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -24,17 +27,44 @@ protected:
 	virtual void BeginPlay() override;
 	virtual bool ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	UFUNCTION(BlueprintCallable)
 	bool AddItem(UTRXInventoryObject* Item);
+	UFUNCTION(BlueprintCallable)
+	bool RemoveItem(UTRXInventoryObject* Item);
+	UFUNCTION(BlueprintCallable)
+	bool AddItemAtPosition(UTRXInventoryObject* Item, const FGridCoord& Position);
+	UFUNCTION(Blueprintable)
+	bool ContainsItem(UTRXInventoryObject* Item) const;
+	UFUNCTION(Blueprintable)
+	bool IsValidPosition(UTRXInventoryObject* Item, FGridCoord Position) const;
+	UFUNCTION(Blueprintable)
+	bool MoveItem(UTRXInventoryObject* Item, const FGridCoord& position) const;
+
+
+	UFUNCTION()
+	void Onrepy();
+	FVector2d GetSize() const;
+	const TArray<UTRXInventoryObject*>& GetInventoryArray() const;
 private:
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(AllowPrivateAccess = true), Replicated)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(AllowPrivateAccess = true), ReplicatedUsing=Onrepy)
 	TArray<UTRXInventoryObject*> InventoryArray;
+	UPROPERTY(ReplicatedUsing=Onrepy)
+	mutable int8 ChangedArray = true;
+	UPROPERTY(BlueprintAssignable, meta=(AllowPrivateAccess = true))
+	FInventoryUpdated OnInventoryUpdated;
+
+	UFUNCTION()
+	void SendInventoryUpdated() const;
+	
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, meta=(AllowPrivateAccess = true), Replicated)
 	int SizeX;
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, meta=(AllowPrivateAccess = true), Replicated)
 	int SizeY;
 
 };
+
+
